@@ -15,7 +15,7 @@ class FlutterStripeTerminalChannelHandler(context: Context): MethodChannel.Metho
         when(call.method) {
             "setConnectionTokenParams" -> FlutterStripeTerminal.setConnectionTokenParams(call.argument<String?>("serverUrl")!!, call.argument<String?>("authToken")!!, result)
             "searchForReaders" -> FlutterStripeTerminal.searchForReaders(result)
-            "connectToReader" -> FlutterStripeTerminal.connectToReader(call.argument<String>("readerId")!!, result)
+            "connectToReader" -> FlutterStripeTerminal.connectToReader(call.argument<String>("readerSerialNumber")!!, result)
         }
     }
 

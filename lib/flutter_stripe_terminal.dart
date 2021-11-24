@@ -18,7 +18,7 @@ class FlutterStripeTerminal {
   }
 
   static Future<bool> setConnectionTokenParams(String serverUrl, String authToken) async {
-    return await _invokeMethod('setConnectionTokenParams', arguments: {
+    return await _invokeMethod("setConnectionTokenParams", arguments: {
       "serverUrl": serverUrl,
       "authToken": authToken
     });
@@ -26,6 +26,10 @@ class FlutterStripeTerminal {
 
   static Future<bool> searchForReaders() async {
     return await _invokeMethod("searchForReaders");
+  }
+
+  static Future<bool> connectToReader(String readerSerialNumber) async {
+    return await _invokeMethod("connectToReader");
   }
 
   static void startEventStream() {
