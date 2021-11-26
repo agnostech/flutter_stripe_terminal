@@ -42,6 +42,7 @@ class FlutterStripeTerminal {
         }
 
         fun connectToReader(readerSerialNumber: String, result: MethodChannel.Result) {
+
             val reader = availableReadersList!!.filter {
                 it.serialNumber == readerSerialNumber
             }

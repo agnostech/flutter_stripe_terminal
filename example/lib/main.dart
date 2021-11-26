@@ -17,6 +17,13 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
+    FlutterStripeTerminal.setConnectionTokenParams(
+      "YOUR_CONNECTION_TOKEN_API", "YOUR_AUTHORIZATION_TOKEN_FOR_API"
+      )
+    .then((value) => FlutterStripeTerminal.startTerminalEventStream())
+    .then((value) => FlutterStripeTerminal.searchForReaders())
+    .catchError((error) => print(error));
+
     FlutterStripeTerminal.readersList.listen((List<Reader> readersList) {
       setState(() {
         readers = readersList;
@@ -31,7 +38,7 @@ class _MyAppState extends State<MyApp> {
           appBar: AppBar(
             title: const Text('Stripe Terminal'),
           ),
-          body: readers.length > 0
+          body: readers.length == 0
               ? Center(
                   child: Text('No devices found'),
                 )
@@ -39,6 +46,10 @@ class _MyAppState extends State<MyApp> {
                   itemCount: readers.length,
                   itemBuilder: (context, position) {
                     return ListTile(
+                      onTap: () async {
+                        await FlutterStripeTerminal.connectToReader(readers[position].serialNumber);
+                        print("reader connected");
+                      },
                       title: Text(readers[position].deviceName),
                     );
                   },

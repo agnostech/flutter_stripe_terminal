@@ -43,7 +43,9 @@ class FlutterStripeTerminal {
   }
 
   static Future<bool> connectToReader(String readerSerialNumber) async {
-    return await _invokeMethod("connectToReader");
+    return await _invokeMethod("connectToReader", arguments: {
+      "readerSerialNumber": readerSerialNumber
+    });
   }
 
   static void startTerminalEventStream() {

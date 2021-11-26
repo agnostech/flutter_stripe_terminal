@@ -69,7 +69,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
             eventSink.success(mapOf(
                 "deviceList" to readers.map {
                     mapOf(
-                        "id" to it.serialNumber,
+                        "serialNumber" to it.serialNumber,
                         "deviceName" to it.deviceType.name
                     )
                 }
