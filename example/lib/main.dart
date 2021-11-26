@@ -12,25 +12,37 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  String _platformVersion = 'Unknown';
+  List<Reader> readers = [];
 
   @override
   void initState() {
     super.initState();
+    FlutterStripeTerminal.readersList.listen((List<Reader> readersList) {
+      setState(() {
+        readers = readersList;
+      });
+    });
   }
 
-  
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        appBar: AppBar(
-          title: const Text('Plugin example app'),
-        ),
-        body: Center(
-          child: Text('Running on: $_platformVersion\n'),
-        ),
-      ),
+          appBar: AppBar(
+            title: const Text('Stripe Terminal'),
+          ),
+          body: readers.length > 0
+              ? Center(
+                  child: Text('No devices found'),
+                )
+              : ListView.builder(
+                  itemCount: readers.length,
+                  itemBuilder: (context, position) {
+                    return ListTile(
+                      title: Text(readers[position].deviceName),
+                    );
+                  },
+                )),
     );
   }
 }

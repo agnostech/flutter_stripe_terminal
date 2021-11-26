@@ -40,7 +40,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onConnectionStatusChange(status)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "connectionStatus" to status.name
+                "readerConnectionStatus" to status.name
             ))
         }
     }
@@ -49,7 +49,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onPaymentStatusChange(status)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "paymentStatus" to status.name
+                "readerPaymentStatus" to status.name
             ))
         }
     }
@@ -57,7 +57,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
     override fun onUnexpectedReaderDisconnect(reader: Reader) {
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "connectionStatus" to "DISCONNECTED"
+                "readerConnectionStatus" to "DISCONNECTED"
             ))
         }
     }
@@ -81,7 +81,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onFinishInstallingUpdate(update, e)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to "FINISHED UPDATE INSTALLATION"
+                "readerUpdateStatus" to "FINISHED_UPDATE_INSTALLATION"
             ))
         }
     }
@@ -90,7 +90,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onReportAvailableUpdate(update)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to "UPDATE AVAILABLE"
+                "readerUpdateStatus" to "UPDATE_AVAILABLE"
             ))
         }
     }
@@ -99,7 +99,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onReportLowBatteryWarning()
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to "LOW BATTERY"
+                "readerEvent" to "LOW_BATTERY"
             ))
         }
     }
@@ -108,7 +108,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onReportReaderEvent(event)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to event.name
+                "readerEvent" to event.name
             ))
         }
     }
@@ -117,7 +117,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onReportReaderSoftwareUpdateProgress(progress)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to "SOFTWARE UPDATE IN PROGRESS"
+                "readerUpdateStatus" to "SOFTWARE_UPDATE_IN_PROGRESS"
             ))
         }
     }
@@ -126,7 +126,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onRequestReaderDisplayMessage(message)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to message.name
+                "readerEvent" to message.name
             ))
         }
     }
@@ -136,7 +136,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         Log.d("READER INPUT REQUEST", options.toString())
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerInputOptions" to options
+                "readerEvent" to options
             ))
         }
     }
@@ -145,7 +145,7 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
         super.onStartInstallingUpdate(update, cancelable)
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerStatus" to "STARTING UPDATE INSTALLATION"
+                "readerUpdateStatus" to "STARTING_UPDATE_INSTALLATION"
             ))
         }
     }
