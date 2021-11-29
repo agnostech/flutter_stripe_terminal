@@ -133,10 +133,9 @@ class FlutterStripeTerminalEventHandler(private val context: Context): EventChan
 
     override fun onRequestReaderInput(options: ReaderInputOptions) {
         super.onRequestReaderInput(options)
-        Log.d("READER INPUT REQUEST", options.toString())
         Handler(Looper.getMainLooper()).post {
             eventSink.success(mapOf(
-                "readerEvent" to options
+                "readerInputEvent" to options.toString()
             ))
         }
     }

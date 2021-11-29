@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 
 import 'package:flutter_stripe_terminal/flutter_stripe_terminal.dart';
+import 'package:http/http.dart' as http;
 
 void main() {
   runApp(MyApp());
@@ -29,6 +32,41 @@ class _MyAppState extends State<MyApp> {
         readers = readersList;
       });
     });
+
+    FlutterStripeTerminal.readerConnectionStatus.listen((ReaderConnectionStatus connectionStatus) {
+      print(connectionStatus);
+    });
+
+    FlutterStripeTerminal.readerPaymentStatus.listen((ReaderPaymentStatus paymentStatus) {
+      print(paymentStatus);
+    });
+
+    FlutterStripeTerminal.readerUpdateStatus.listen((ReaderUpdateStatus updateStatus) {
+      print(updateStatus);
+    });
+
+    FlutterStripeTerminal.readerEvent.listen((ReaderEvent readerEvent) {
+      print(readerEvent);
+    });
+
+    FlutterStripeTerminal.readerInputEvent.listen((String readerInputEvent) {
+      print(readerInputEvent);
+    });
+  }
+
+  void initiatePayment() async {
+    final url = Uri.parse("/api/payments/payment_intent");
+    final response = await http.post(url, body: {
+      'amount': '100'
+    }, headers: {
+      'Authorization': "Bearer YOUR_AUTH_CODE"
+    });
+
+    print(response.body);
+
+    String intentId = await FlutterStripeTerminal.processPayment(jsonDecode(response.body)['client_secret']);
+
+    print(intentId);
   }
 
   @override
@@ -42,18 +80,26 @@ class _MyAppState extends State<MyApp> {
               ? Center(
                   child: Text('No devices found'),
                 )
-              : ListView.builder(
+              : Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  ElevatedButton(onPressed: () {
+                    initiatePayment();
+                  }, child: Text('Initiate payment')),
+                  ListView.builder(
+                    shrinkWrap: true,
                   itemCount: readers.length,
                   itemBuilder: (context, position) {
                     return ListTile(
                       onTap: () async {
-                        await FlutterStripeTerminal.connectToReader(readers[position].serialNumber);
-                        print("reader connected");
+                        await FlutterStripeTerminal.connectToReader(readers[position].serialNumber, "LOCATION_ID");
                       },
                       title: Text(readers[position].deviceName),
                     );
                   },
-                )),
+                )
+                ],
+              )),
     );
   }
 }

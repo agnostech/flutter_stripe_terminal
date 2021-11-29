@@ -27,8 +27,4 @@ enum ReaderEvent {
   TRY_ANOTHER_CARD,
   CARD_REMOVED,
   CARD_INSERTED,
-  NONE,
-  INSERT,
-  SWIPE,
-  TAP
 }

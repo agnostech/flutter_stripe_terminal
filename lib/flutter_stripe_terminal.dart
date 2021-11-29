@@ -23,6 +23,7 @@ class FlutterStripeTerminal {
       BehaviorSubject<ReaderUpdateStatus>();
   static BehaviorSubject<ReaderEvent> readerEvent =
       BehaviorSubject<ReaderEvent>();
+  static BehaviorSubject<String> readerInputEvent = BehaviorSubject<String>();
   static BehaviorSubject<List<Reader>> readersList = BehaviorSubject<List<Reader>>();
 
   static Future<T?> _invokeMethod<T>(
@@ -42,14 +43,22 @@ class FlutterStripeTerminal {
     return await _invokeMethod("searchForReaders");
   }
 
-  static Future<bool> connectToReader(String readerSerialNumber) async {
+  static Future<bool> connectToReader(String readerSerialNumber, String locationId) async {
     return await _invokeMethod("connectToReader", arguments: {
-      "readerSerialNumber": readerSerialNumber
+      "readerSerialNumber": readerSerialNumber,
+      "locationId": locationId
     });
+  }
+
+  static Future<String> processPayment(String clientSecret) async {
+    return Map<String, String>.from(await _invokeMethod('processPayment', arguments: {
+      "clientSecret": clientSecret
+    }))["paymentIntentId"]!;
   }
 
   static void startTerminalEventStream() {
     _eventChannel.receiveBroadcastStream().listen((event) {
+      print(event);
       final eventData = Map<String, dynamic>.from(event);
       final eventKey = eventData.keys.first;
       switch (eventKey) {
@@ -70,6 +79,9 @@ class FlutterStripeTerminal {
           readerEvent.add(EnumToString.fromString(
               ReaderEvent.values, eventData[eventKey])!);
           break;
+        case "readerInputEvent":
+          readerInputEvent.add(eventData[eventKey]);
+          break;
         case "deviceList":
           readersList.add(List<Reader>.from(eventData[eventKey].map((reader) => Reader.fromJson(Map<String, String>.from(reader)))).toList());
           break;
@@ -84,5 +96,6 @@ class FlutterStripeTerminal {
     readerUpdateStatus.close();
     readerEvent.close();
     readersList.close();
+    readerInputEvent.close();
   }
 }
