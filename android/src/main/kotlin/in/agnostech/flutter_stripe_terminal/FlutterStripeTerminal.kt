@@ -27,6 +27,23 @@ class FlutterStripeTerminal {
             result.success(true)
         }
 
+        fun disconnectReader(result: MethodChannel.Result) {
+            Terminal.getInstance().disconnectReader(object: Callback {
+                override fun onFailure(e: TerminalException) {
+                    Handler(Looper.getMainLooper()).post {
+                        result.error(e.errorCode.toLogString(), e.message, null)
+                    }
+                }
+
+                override fun onSuccess() {
+                    Handler(Looper.getMainLooper()).post {
+                        result.success(true)
+                    }
+                }
+
+            })
+        }
+
         fun searchForReaders(result: MethodChannel.Result) {
             val config = DiscoveryConfiguration(
                 discoveryMethod = DiscoveryMethod.BLUETOOTH_SCAN

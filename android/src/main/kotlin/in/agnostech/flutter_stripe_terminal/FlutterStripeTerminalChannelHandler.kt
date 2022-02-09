@@ -17,6 +17,7 @@ class FlutterStripeTerminalChannelHandler(context: Context): MethodChannel.Metho
             "searchForReaders" -> FlutterStripeTerminal.searchForReaders(result)
             "connectToReader" -> FlutterStripeTerminal.connectToReader(call.argument<String>("readerSerialNumber")!!, call.argument<String>("locationId")!!, result)
             "processPayment" -> FlutterStripeTerminal.processPayment(call.argument<String>("clientSecret")!!, result)
+            "disconnectReader" -> FlutterStripeTerminal.disconnectReader(result)
         }
     }
 
