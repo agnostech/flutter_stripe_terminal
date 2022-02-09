@@ -56,6 +56,10 @@ class FlutterStripeTerminal {
     }))["paymentIntentId"]!;
   }
 
+  static Future<bool?> disconnectReader() async {
+    return _invokeMethod<bool>("disconnectReader");
+  }
+
   static void startTerminalEventStream() {
     _eventChannel.receiveBroadcastStream().listen((event) {
       print(event);
