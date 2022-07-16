@@ -21,7 +21,7 @@ class _MyAppState extends State<MyApp> {
   void initState() {
     super.initState();
     FlutterStripeTerminal.setConnectionTokenParams(
-      "YOUR_CONNECTION_TOKEN_API", "YOUR_AUTHORIZATION_TOKEN_FOR_API"
+      "http://devapi.custofood.com/api/payments/connection_token", "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjYyNywiaXNzIjoiaHR0cDovL2RldmFwaS5jdXN0b2Zvb2QuY29tL2FwaS9sb2dpbiIsImlhdCI6MTY0NDQwODk5NCwiZXhwIjoxNjQ3MDAwOTk0LCJuYmYiOjE2NDQ0MDg5OTQsImp0aSI6ImNVY0I5b0RJRTU5dXRhSk4ifQ.O9ML8yibl6J_8Zgd_ZV4JW1uijV6YZynKxMZA5YOsY0"
       )
     .then((value) => FlutterStripeTerminal.startTerminalEventStream())
     .then((value) => FlutterStripeTerminal.searchForReaders())
@@ -55,11 +55,11 @@ class _MyAppState extends State<MyApp> {
   }
 
   void initiatePayment() async {
-    final url = Uri.parse("/api/payments/payment_intent");
+    final url = Uri.parse("http://devapi.custofood.com/api/payments/payment_intent");
     final response = await http.post(url, body: {
-      'amount': '100'
+      'amount': '1'
     }, headers: {
-      'Authorization': "Bearer YOUR_AUTH_CODE"
+      'Authorization': "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOjYyNywiaXNzIjoiaHR0cDovL2RldmFwaS5jdXN0b2Zvb2QuY29tL2FwaS9sb2dpbiIsImlhdCI6MTY0NDQwODk5NCwiZXhwIjoxNjQ3MDAwOTk0LCJuYmYiOjE2NDQ0MDg5OTQsImp0aSI6ImNVY0I5b0RJRTU5dXRhSk4ifQ.O9ML8yibl6J_8Zgd_ZV4JW1uijV6YZynKxMZA5YOsY0"
     });
 
     print(response.body);
@@ -92,7 +92,7 @@ class _MyAppState extends State<MyApp> {
                   itemBuilder: (context, position) {
                     return ListTile(
                       onTap: () async {
-                        await FlutterStripeTerminal.connectToReader(readers[position].serialNumber, "LOCATION_ID");
+                        await FlutterStripeTerminal.connectToReader(readers[position].serialNumber, "tml_EZ3aRgXYNvd1Qo");
                       },
                       title: Text(readers[position].deviceName),
                     );
