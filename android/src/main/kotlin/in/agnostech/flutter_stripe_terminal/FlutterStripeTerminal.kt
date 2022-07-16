@@ -33,7 +33,7 @@ class FlutterStripeTerminal {
             cancelDiscovery?.cancel(object: Callback {
                 override fun onFailure(e: TerminalException) {
                     Handler(Looper.getMainLooper()).post {
-                        result.error(e.errorCode.toLogString(), e.message, null)
+                        Log.d("STRIPE TERMINAL", "reader discovery cancellation error")
                     }
                 }
 
