@@ -21,12 +21,10 @@ class TokenProvider: ConnectionTokenProvider {
                         }
 
                         override fun onError(anError: ANError) {
-                            Log.d("STRIP TERMINAL", anError.errorBody)
                             callback.onFailure(ConnectionTokenException("Couldn't fetch token from the server", anError))
                         }
                     })
         } catch (e: Exception) {
-            Log.d("STRIP TERMINAL", e.stackTrace.toString())
             callback.onFailure(
                     ConnectionTokenException("Failed to fetch connection token", e)
             );

@@ -5,6 +5,7 @@ import android.os.Looper
 import android.util.Log
 import com.stripe.stripeterminal.Terminal
 import com.stripe.stripeterminal.external.callable.Callback
+import com.stripe.stripeterminal.external.callable.Cancelable
 import com.stripe.stripeterminal.external.callable.PaymentIntentCallback
 import com.stripe.stripeterminal.external.callable.ReaderCallback
 import com.stripe.stripeterminal.external.models.*
@@ -15,7 +16,8 @@ class FlutterStripeTerminal {
         lateinit var serverUrl: String
         lateinit var authToken: String
         var availableReadersList: List<Reader>? = null
-        var flutterStripeTerminalEventHandler: FlutterStripeTerminalEventHandler? = null;
+        var flutterStripeTerminalEventHandler: FlutterStripeTerminalEventHandler? = null
+        var cancelDiscovery: Cancelable? = null;
 
         fun setConnectionTokenParams(
             serverUrl: String,
@@ -28,6 +30,20 @@ class FlutterStripeTerminal {
         }
 
         fun disconnectReader(result: MethodChannel.Result) {
+            cancelDiscovery?.cancel(object: Callback {
+                override fun onFailure(e: TerminalException) {
+                    Handler(Looper.getMainLooper()).post {
+                        result.error(e.errorCode.toLogString(), e.message, null)
+                    }
+                }
+
+                override fun onSuccess() {
+                    Handler(Looper.getMainLooper()).post {
+                        Log.d("STRIPE TERMINAL", "reader discovery cancelled")
+                    }
+                }
+
+            })
             Terminal.getInstance().disconnectReader(object: Callback {
                 override fun onFailure(e: TerminalException) {
                     Handler(Looper.getMainLooper()).post {
@@ -48,7 +64,7 @@ class FlutterStripeTerminal {
             val config = DiscoveryConfiguration(
                 discoveryMethod = DiscoveryMethod.BLUETOOTH_SCAN
             )
-            Terminal.getInstance().discoverReaders(
+            cancelDiscovery = Terminal.getInstance().discoverReaders(
                 config,
                 flutterStripeTerminalEventHandler!!.getDiscoveryListener(),
                 object : Callback {
