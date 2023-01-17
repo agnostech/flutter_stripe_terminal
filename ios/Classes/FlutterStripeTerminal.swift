@@ -15,6 +15,7 @@ class FlutterStripeTerminal {
     var serverUrl: String?
     var authToken: String?
     var availableReaders: [Reader]?
+    var discoverCancelable: Cancelable?
     
     func setConnectionTokenParams(serverUrl: String, authToken: String, result: FlutterResult) {
         self.serverUrl = serverUrl
@@ -24,7 +25,7 @@ class FlutterStripeTerminal {
     
     func searchForReaders(result: @escaping FlutterResult) {
         let config = DiscoveryConfiguration(discoveryMethod: DiscoveryMethod.bluetoothScan, simulated: false)
-        Terminal.shared.discoverReaders(config, delegate: FlutterStripeTerminalEventHandler.shared) { error in
+        self.discoverCancelable = Terminal.shared.discoverReaders(config, delegate: FlutterStripeTerminalEventHandler.shared) { error in
             DispatchQueue.main.async {
                 if let error = error {
                     result(error)
@@ -85,7 +86,8 @@ class FlutterStripeTerminal {
     }
     
     func disconnectReader(result: @escaping FlutterResult) {
-        Terminal.shared.disconnectReader(delegate: FlutterStripeTerminalEventHandler.shared) { error in
+        self.discoverCancelable.cancel()
+        Terminal.shared.disconnectReader() { error in
             DispatchQueue.main.async {
                 if let error = error {
                     result(error)
