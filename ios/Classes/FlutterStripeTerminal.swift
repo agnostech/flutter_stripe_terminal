@@ -8,6 +8,7 @@
 import Foundation
 import StripeTerminal
 import Flutter
+import Dispatch
 
 class FlutterStripeTerminal {
     static let shared = FlutterStripeTerminal()
@@ -87,9 +88,10 @@ class FlutterStripeTerminal {
     
     func disconnectReader(result: @escaping FlutterResult) {
         do {
-            Task {
-                let result = await self.discoverCancelable?.cancel()
+            let op = TaskOperation {
+                try await self.discoverCancelable?.cancel()
             }
+            op.waitUntilFinished()
             Terminal.shared.disconnectReader() { error in
                 DispatchQueue.main.async {
                     if let error = error {
