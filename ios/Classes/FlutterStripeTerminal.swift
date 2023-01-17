@@ -86,7 +86,7 @@ class FlutterStripeTerminal {
     }
     
     func disconnectReader(result: @escaping FlutterResult) {
-        self.discoverCancelable.cancel()
+        self.discoverCancelable?.cancel()
         Terminal.shared.disconnectReader() { error in
             DispatchQueue.main.async {
                 if let error = error {
