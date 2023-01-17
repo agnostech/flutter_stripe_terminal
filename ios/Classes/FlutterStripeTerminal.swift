@@ -83,4 +83,16 @@ class FlutterStripeTerminal {
             }
         }
     }
+    
+    func disconnectReader(result: @escaping FlutterResult) {
+        Terminal.shared.disconnectReader(delegate: FlutterStripeTerminalEventHandler.shared) { error in
+            DispatchQueue.main.async {
+                if let error = error {
+                    result(error)
+                } else {
+                    result(true)
+                }
+            }
+        }
+    }
 }
