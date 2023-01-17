@@ -22,6 +22,8 @@ public func handleMethodCall(_ call: FlutterMethodCall, result: @escaping Flutte
         FlutterStripeTerminal.shared.connectToReader(readerSerialNumber: arguments["readerSerialNumber"] as! String, locationId: arguments["locationId"] as! String, result: result)
     case "processPayment":
         FlutterStripeTerminal.shared.processPayment(clientSecret: arguments["clientSecret"] as! String, result: result)
+    case "disconnectReader":
+        FlutterStripeTerminal.shared.disconnectReader(result: result)
     default:
         result(FlutterMethodNotImplemented)
     }
