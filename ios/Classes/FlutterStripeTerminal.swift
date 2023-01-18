@@ -86,12 +86,16 @@ class FlutterStripeTerminal {
         }
     }
     
+    @available(iOS 13.0, *)
     func disconnectReader(result: @escaping FlutterResult) {
-        do {
-            let op = TaskOperation {
-                try await self.discoverCancelable?.cancel()
+            Task{
+                do{
+                   try await  self.discoverCancelable?.cancel()
+                }catch let error {
+                    result(error)
+                }
+           
             }
-            op.waitUntilFinished()
             Terminal.shared.disconnectReader() { error in
                 DispatchQueue.main.async {
                     if let error = error {
@@ -101,8 +105,6 @@ class FlutterStripeTerminal {
                     }
                 }
             }
-        } catch let error {
-            result(error)
-        }
+        
     }
 }

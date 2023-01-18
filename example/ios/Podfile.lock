@@ -20,10 +20,10 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/flutter_stripe_terminal/ios"
 
 SPEC CHECKSUMS:
-  Flutter: 434fef37c0980e73bb6479ef766c45957d4b510c
+  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
   flutter_stripe_terminal: 82e5718906d87c7216d7f23fb08e471352b95599
   StripeTerminal: 92673ce3ecb15ae2f8436fc47c78fdf729955462
 
 PODFILE CHECKSUM: fe0e1ee7f3d1f7d00b11b474b62dd62134535aea
 
-COCOAPODS: 1.11.2
+COCOAPODS: 1.11.3
