@@ -41,6 +41,6 @@ android {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "com.stripe:stripeterminal:2.11.0"
+    implementation "com.stripe:stripeterminal:2.16.0"
     implementation 'com.amitshekhar.android:android-networking:1.0.2'
 }
