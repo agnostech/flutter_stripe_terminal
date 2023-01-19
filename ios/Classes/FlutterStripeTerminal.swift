@@ -21,6 +21,7 @@ class FlutterStripeTerminal {
     func setConnectionTokenParams(serverUrl: String, authToken: String, result: FlutterResult) {
         self.serverUrl = serverUrl
         self.authToken = authToken
+        Terminal.setTokenProvider(APIClient.shared)
         result(true)
     }
     
@@ -29,7 +30,7 @@ class FlutterStripeTerminal {
         self.discoverCancelable = Terminal.shared.discoverReaders(config, delegate: FlutterStripeTerminalEventHandler.shared) { error in
             DispatchQueue.main.async {
                 if let error = error {
-                    result(error)
+                    result(FlutterError(code: "Search Error", message: "", details: ""))
                 } else {
                     result(true)
                 }
@@ -41,12 +42,12 @@ class FlutterStripeTerminal {
         let selectedReaders = availableReaders?.filter { reader in
             return reader.serialNumber == readerSerialNumber
         }
-        
+       
         if (!selectedReaders!.isEmpty) {
             Terminal.shared.connectBluetoothReader(selectedReaders![0], delegate: FlutterStripeTerminalEventHandler.shared, connectionConfig: BluetoothConnectionConfiguration(locationId: locationId)) { _, error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        result(error)
+                        result(FlutterError(code: "Connect Error", message: "", details: ""))
                     } else {
                         result(true)
                     }
@@ -68,42 +69,49 @@ class FlutterStripeTerminal {
                                 ])
                             } else if let finalError = finalError {
                                 DispatchQueue.main.async {
-                                    result(finalError)
+                                    result(FlutterError(code: "Final Intent Error", message: "", details: ""))
                                 }
                             }
                         }
                     } else if let processedError = processedError {
                         DispatchQueue.main.async {
-                            result(processedError)
+                            result(FlutterError(code: "Processed Error", message: "", details: ""))
                         }
                     }
                 }
             } else if let retrievedError = retrievedError {
                 DispatchQueue.main.async {
-                    result(retrievedError)
+                    result(FlutterError(code: "Retrived Error", message: "", details: ""))
                 }
             }
         }
     }
     
     func disconnectReader(result: @escaping FlutterResult) {
-            self.discoverCancelable?.cancel() { error in
-                DispatchQueue.main.async {
-                    if let error = error {
-                        result(error)
-                    } else {
-                        result(true)
-                    }
-                }
-            }
+        if(self.discoverCancelable == nil){
             Terminal.shared.disconnectReader() { error in
                 DispatchQueue.main.async {
                     if let error = error {
-                        result(error)
+                        result(FlutterError(code: "Disconnect Reader Error", message: "", details: ""))
                     } else {
                         result(true)
                     }
                 }
             }
+                    
+        }else {
+            self.discoverCancelable?.cancel() { error in
+                Terminal.shared.disconnectReader() { error in
+                    DispatchQueue.main.async {
+                    if let error = error {
+                        result(FlutterError(code: "Disconnect Reader Error", message: "", details: ""))
+                    } else {
+                        result(true)
+                    }
+                }
+                }
+            }
+            
+        }
     }
 }

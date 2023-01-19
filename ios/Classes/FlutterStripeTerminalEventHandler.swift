@@ -57,6 +57,7 @@ class FlutterStripeTerminalEventHandler: NSObject, FlutterStreamHandler, Discove
     }
     
     func reader(_ reader: Reader, didReportReaderEvent event: ReaderEvent, info: [AnyHashable : Any]?) {
+       
         eventSink!([
             "readerEvent": Terminal.stringFromReaderEvent(event)
         ])
@@ -69,12 +70,14 @@ class FlutterStripeTerminalEventHandler: NSObject, FlutterStreamHandler, Discove
     }
     
     func terminal(_ terminal: Terminal, didChangeConnectionStatus status: ConnectionStatus) {
+       
         eventSink!([
             "readerConnectionStatus": Terminal.stringFromConnectionStatus(status)
         ])
     }
     
     func terminal(_ terminal: Terminal, didReportUnexpectedReaderDisconnect reader: Reader) {
+       
         eventSink!([
             "readerConnectionStatus": "DISCONNECTED"
         ])
@@ -82,7 +85,6 @@ class FlutterStripeTerminalEventHandler: NSObject, FlutterStreamHandler, Discove
     
     func onListen(withArguments arguments: Any?, eventSink events: @escaping FlutterEventSink) -> FlutterError? {
         self.eventSink = events
-        Terminal.setTokenProvider(APIClient.shared)
         return nil
     }
     
@@ -91,6 +93,7 @@ class FlutterStripeTerminalEventHandler: NSObject, FlutterStreamHandler, Discove
     }
     
     func terminal(_ terminal: Terminal, didUpdateDiscoveredReaders readers: [Reader]) {
+       
         FlutterStripeTerminal.shared.availableReaders = readers
         eventSink!([
             "deviceList": readers.map{

@@ -24,7 +24,8 @@ class FlutterStripeTerminal {
   static BehaviorSubject<ReaderEvent> readerEvent =
       BehaviorSubject<ReaderEvent>();
   static BehaviorSubject<String> readerInputEvent = BehaviorSubject<String>();
-  static BehaviorSubject<List<Reader>> readersList = BehaviorSubject<List<Reader>>();
+  static BehaviorSubject<List<Reader>> readersList =
+      BehaviorSubject<List<Reader>>();
 
   static Future<T?> _invokeMethod<T>(
     String method, {
@@ -43,7 +44,8 @@ class FlutterStripeTerminal {
     return _invokeMethod<bool>("searchForReaders");
   }
 
-  static Future<bool?> connectToReader(String readerSerialNumber, String locationId) async {
+  static Future<bool?> connectToReader(
+      String readerSerialNumber, String locationId) async {
     return _invokeMethod<bool>("connectToReader", arguments: {
       "readerSerialNumber": readerSerialNumber,
       "locationId": locationId
@@ -51,9 +53,8 @@ class FlutterStripeTerminal {
   }
 
   static Future<String> processPayment(String clientSecret) async {
-    return Map<String, String>.from(await _invokeMethod('processPayment', arguments: {
-      "clientSecret": clientSecret
-    }))["paymentIntentId"]!;
+    return Map<String, String>.from(await _invokeMethod('processPayment',
+        arguments: {"clientSecret": clientSecret}))["paymentIntentId"]!;
   }
 
   static Future<bool?> disconnectReader() async {
@@ -65,6 +66,7 @@ class FlutterStripeTerminal {
       print(event);
       final eventData = Map<String, dynamic>.from(event);
       final eventKey = eventData.keys.first;
+
       switch (eventKey) {
         case "readerConnectionStatus":
           readerConnectionStatus.add(
@@ -80,16 +82,23 @@ class FlutterStripeTerminal {
               ReaderUpdateStatus.values, eventData[eventKey])!);
           break;
         case "readerEvent":
-          readerEvent.add(EnumToString.fromString(
-              ReaderEvent.values, eventData[eventKey])!);
+          final eventStringLC = (eventData[eventKey] as String).toLowerCase();
+          if (eventStringLC.contains("remove")) {
+            readerEvent.add(
+                EnumToString.fromString(ReaderEvent.values, "REMOVE_CARD")!);
+          } else {
+            readerEvent.add(EnumToString.fromString(
+                ReaderEvent.values, eventData[eventKey])!);
+          }
+
           break;
         case "readerInputEvent":
           readerInputEvent.add(eventData[eventKey]);
           break;
         case "deviceList":
-          readersList.add(List<Reader>.from(eventData[eventKey].map((reader) => Reader.fromJson(Map<String, String>.from(reader)))).toList());
+          readersList.add(List<Reader>.from(eventData[eventKey].map((reader) =>
+              Reader.fromJson(Map<String, String>.from(reader)))).toList());
           break;
-
       }
     });
   }
