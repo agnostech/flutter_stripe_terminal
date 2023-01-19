@@ -1,6 +1,6 @@
 name: flutter_stripe_terminal
 description: Stripe Terminal Plugin.
-version: 0.0.4
+version: 0.0.5
 homepage:
 
 environment:
